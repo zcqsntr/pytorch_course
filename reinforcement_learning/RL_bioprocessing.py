@@ -208,9 +208,9 @@ class LT_agent():
         :param transition:
         :return:
         '''
-        state, action, reward, next_state = transition
+        state, action, reward, next_state, done = transition
 
-        self.values[state, action] += self.alpha * (reward + self.gamma * np.max(self.values[next_state]) - self.values[state, action])
+        self.values[state, action] += self.alpha * (reward + self.gamma * np.max(self.values[next_state]) * (1-done) - self.values[state, action])
 
     def get_action(self, state, explore_rate):
         '''
@@ -288,7 +288,7 @@ for episode in range(n_episodes):
     for i in range(t_steps):
         action = agent.get_action(state, explore_rate)
         next_state, reward, done = env.step(action)
-        transition = (state, action, reward, next_state)
+        transition = (state, action, reward, next_state, done)
         agent.update_values(transition)
         state = next_state
         e_return += reward
